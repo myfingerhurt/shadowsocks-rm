@@ -128,7 +128,7 @@ class DbTransfer(object):
         timeout = 30
         socket.setdefaulttimeout(timeout)
         while True:
-            logging.warn('db loop')
+            logging.debug('db loop')
             try:
                 DbTransfer.get_instance().push_db_all_user()
                 rows = DbTransfer.get_instance().pull_db_all_user()
