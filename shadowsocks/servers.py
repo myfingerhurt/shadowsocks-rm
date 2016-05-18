@@ -24,7 +24,11 @@ import signal
 import time
 
 if config.LOG_ENABLE:
-    logging.basicConfig(format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',datefmt='%Y, %b %d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
+  if config.LOG_LEVEL == logging.DEBUG:
+    logging.basicConfig(format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
+  else:
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
