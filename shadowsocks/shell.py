@@ -136,7 +136,7 @@ def get_config(is_local):
                     'version']
     else:
         shortopts = 'hd:s:p:k:m:c:t:vqa'
-        longopts = ['help', 'fast-open', 'pid-file=', 'log-file=', 'workers=',
+        longopts = ['help', 'fast-open', 'pid-file=', 'log-file=', 'dns-server=', 'workers=',
                     'forbidden-ip=', 'user=', 'manager-address=', 'version']
     try:
         config_path = find_config()
@@ -204,7 +204,9 @@ def get_config(is_local):
                 config['pid-file'] = to_str(value)
             elif key == '--log-file':
                 config['log-file'] = to_str(value)
-            elif key == '-q':
+            elif key == '--dns-server':
+                config['dns_server']=[to_str(value)]
+			elif key == '-q':
                 v_count -= 1
                 config['verbose'] = v_count
     except getopt.GetoptError as e:
@@ -295,10 +297,10 @@ Proxy options:
 General options:
   -h, --help             show this help message and exit
   -d start/stop/restart  daemon mode
-  --pid-file PID_FILE    pid file for daemon mode
-  --log-file LOG_FILE    log file for daemon mode
-  --user USER            username to run as
-  -v, -vv                verbose mode
+  --pid-file=PID_FILE    pid file for daemon mode
+  --log-file=LOG_FILE    log file for daemon mode
+  --user=USER            username to run as
+  -v, -vv                verbose mode '-vv' turns on more verbose mode
   -q, -qq                quiet mode, only show warnings/errors
   --version              show version information
 
@@ -328,10 +330,11 @@ Proxy options:
 General options:
   -h, --help             show this help message and exit
   -d start/stop/restart  daemon mode
-  --pid-file PID_FILE    pid file for daemon mode
-  --log-file LOG_FILE    log file for daemon mode
-  --user USER            username to run as
-  -v, -vv                verbose mode
+  --pid-file=PID_FILE    pid file for daemon mode
+  --log-file=LOG_FILE    log file for daemon mode
+  --dns-server=ip        Override default DNS address
+  --user=USER            username to run as
+  -v, -vv                verbose mode '-vv' turns on more verbose mode
   -q, -qq                quiet mode, only show warnings/errors
   --version              show version information
 
