@@ -407,7 +407,7 @@ class DNSResolver(object):
     def _send_req(self, hostname, qtype):
         req = build_request(hostname, qtype)
         for server in self._servers:
-            logging.debug('resolving %s with type %d using server %s',
+            logging.info('resolving %s with type %d using server %s',
                           hostname, qtype, server)
             self._sock.sendto(req, (server, 53))
 
