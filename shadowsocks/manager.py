@@ -38,7 +38,7 @@ class Manager(object):
         self._config = config
         self._relays = {}  # (tcprelay, udprelay)
         self._loop = eventloop.EventLoop()
-        self._dns_resolver = asyncdns.DNSResolver()
+        self._dns_resolver = asyncdns.DNSResolver(config.dns_server)
         self._dns_resolver.add_to_loop(self._loop)
 
         self._statistics = collections.defaultdict(int)

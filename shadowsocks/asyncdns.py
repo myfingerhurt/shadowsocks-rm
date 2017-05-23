@@ -249,8 +249,9 @@ STATUS_SECOND = 1
 
 class DNSResolver(object):
 
-    def __init__(self, server_list=None, prefer_ipv6=False):
+    def __init__(self, server_list=None, prefer_ipv6=False, dns_server=None):
         self._loop = None
+        self.dns_server = dns_server
         self._hosts = {}
         self._hostname_status = {}
         self._hostname_to_cb = {}
@@ -272,24 +273,32 @@ class DNSResolver(object):
 
     def _parse_resolv(self):
         self._servers = []
-        try:
-            with open('/etc/resolv.conf', 'rb') as f:
-                content = f.readlines()
-                for line in content:
-                    line = line.strip()
-                    if line:
-                        if line.startswith(b'nameserver'):
-                            parts = line.split()
-                            if len(parts) >= 2:
-                                server = parts[1]
-                                if common.is_ip(server) == socket.AF_INET:
-                                    if type(server) != str:
-                                        server = server.decode('utf8')
-                                    self._servers.append(server)
-        except IOError:
-            pass
+        server = self.dns_server
+        #Custom DNS
+        if common.is_ip(server) == socket.AF_INET:
+            if type(server) != str:
+                server = server.decode('utf8')
+            self._servers.append(server)
+        #Custom DNS invalid
         if not self._servers:
-            self._servers = ['8.8.4.4', '8.8.8.8']
+            try:
+                with open('/etc/resolv.conf', 'rb') as f:
+                    content = f.readlines()
+                    for line in content:
+                        line = line.strip()
+                        if line:
+                            if line.startswith(b'nameserver'):
+                                parts = line.split()
+                                if len(parts) >= 2:
+                                    server = parts[1]
+                                    if common.is_ip(server) == socket.AF_INET:
+                                        if type(server) != str:
+                                            server = server.decode('utf8')
+                                        self._servers.append(server)
+            except IOError:
+                pass
+            if not self._servers:
+                self._servers = ['8.8.4.4', '8.8.8.8']
 
     def _parse_hosts(self):
         etc_path = '/etc/hosts'

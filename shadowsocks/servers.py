@@ -18,16 +18,17 @@
 import sys
 import os
 import logging
-import thread
+import _thread
 import config
+import getopt
 import signal
 import time
 
 if config.LOG_ENABLE:
-  if config.LOG_LEVEL == logging.DEBUG:
-    logging.basicConfig(format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
-  else:
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
+    if config.LOG_LEVEL == logging.DEBUG:
+        logging.basicConfig(format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
+    else:
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',datefmt='%Y/%m/%d %a %H:%M:%S',filename=config.LOG_FILE,level=config.LOG_LEVEL)
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
@@ -41,6 +42,20 @@ from dbtransfer import DbTransfer
 def handler_SIGQUIT():
     return
 
+def print_servers_help():
+    print('''usage: ssserver [OPTION]...
+shadowsocks manyusers branch
+
+Proxy options:
+  -s, --dns-server SERVER_ADDR         DNS server address, default: 8.8.8.8
+
+
+General options:
+  -h, --help             show this help message and exit
+  --version              show version information
+
+''')
+
 def main():
     configer = {
         'server': '%s' % config.SS_BIND_IP,
@@ -53,11 +68,26 @@ def main():
         'fast_open': False,
         'verbose': 1
     }
-    t = thread.start_new_thread(manager.run, (configer,))
+    
+    shortopts = 'h:s'
+    longopts = ['help', 'dns-server', 'version']
+    
+    optlist, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
+    for key, value in optlist:
+        if key in ('-s', '--dns-server'):
+            config['dns_server'] = to_str(value)
+        elif key in ('-h', '--help'):
+            print_servers_help()
+            sys.exit(0)
+        elif key == '--version':
+            print_shadowsocks()
+            sys.exit(0)
+    
+    t = _thread.start_new_thread(manager.run, (configer,))
     time.sleep(1)
-    t = thread.start_new_thread(DbTransfer.thread_db, ())
+    t = _thread.start_new_thread(DbTransfer.thread_db, ())
     time.sleep(1)
-    t = thread.start_new_thread(DbTransfer.thread_push, ())
+    t = _thread.start_new_thread(DbTransfer.thread_push, ())
 
     while True:
         time.sleep(100)
