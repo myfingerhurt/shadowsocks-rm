@@ -15,7 +15,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+from __future__ import print_function
 import sys
 import os
 import logging
@@ -36,7 +36,7 @@ if config.LOG_ENABLE:
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 from shadowsocks import shell, daemon, eventloop, tcprelay, udprelay, \
     asyncdns, manager
-from shadowsocks.common import to_bytes, to_str
+from shadowsocks.common import to_bytes, to_str, validate_ip
 
 import manager
 from dbtransfer import DbTransfer
@@ -50,7 +50,6 @@ shadowsocks manyusers branch
 
 Proxy options:
   -s, --dns-server SERVER_ADDR         DNS server address, default: 8.8.8.8
-
 
 General options:
   -h, --help             show this help message and exit
@@ -79,7 +78,9 @@ def main():
         for key, value in optlist:
             if key in ('-s', '--dns-server'):
                 configer['dns_server'] = to_str(value)
-                logging.info('dns input %s', to_str(value))
+                if not validate_ip(to_str(value)):
+                    print('Invalid DNS IP!')
+                    sys.exit(0)
             elif key in ('-h', '--help'):
                 print_servers_help()
                 sys.exit(0)
