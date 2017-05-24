@@ -38,13 +38,8 @@ class Manager(object):
         self._config = config
         self._relays = {}  # (tcprelay, udprelay)
         self._loop = eventloop.EventLoop()
-<<<<<<< HEAD
         self._dns_resolver = asyncdns.DNSResolver(None,None,config['dns_server'])
-=======
-        self._dns_resolver = asyncdns.DNSResolver(config.dns_server)
->>>>>>> 0785a877b6605ca1b76aea95304fcd901b9db933
         self._dns_resolver.add_to_loop(self._loop)
-
         self._statistics = collections.defaultdict(int)
         self._control_client_addr = None
         try:

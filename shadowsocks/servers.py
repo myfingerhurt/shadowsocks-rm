@@ -15,14 +15,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from __future__ import absolute_import, division, print_function, \
-    with_statement
-
 
 import sys
 import os
 import logging
-import _thread
+import thread
 import config
 import getopt
 import signal
@@ -74,44 +71,31 @@ def main():
         'verbose': 1
     }
     
-<<<<<<< HEAD
-    shortopts = 'h:s:'
-    longopts = ['help', 'dns-server=', 'version']
-=======
-    shortopts = 'h:s'
-    longopts = ['help', 'dns-server', 'version']
->>>>>>> 0785a877b6605ca1b76aea95304fcd901b9db933
-    
-    optlist, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
-    for key, value in optlist:
-        if key in ('-s', '--dns-server'):
-<<<<<<< HEAD
-            configer['dns_server'] = to_str(value)
-            logging.info('dns input %s', value)
-=======
-            config['dns_server'] = to_str(value)
->>>>>>> 0785a877b6605ca1b76aea95304fcd901b9db933
-        elif key in ('-h', '--help'):
-            print_servers_help()
-            sys.exit(0)
-        elif key == '--version':
-            print_shadowsocks()
-            sys.exit(0)
-<<<<<<< HEAD
-        else:
-            print_servers_help()
-            sys.exit(0)
-
+    try:
+        shortopts = 'h:s:'
+        longopts = ['help', 'dns-server=', 'version']
+        
+        optlist, args = getopt.getopt(sys.argv[1:], shortopts, longopts)
+        for key, value in optlist:
+            if key in ('-s', '--dns-server'):
+                configer['dns_server'] = to_str(value)
+                logging.info('dns input %s', to_str(value))
+            elif key in ('-h', '--help'):
+                print_servers_help()
+                sys.exit(0)
+            elif key == '--version':
+                print_shadowsocks()
+                sys.exit(0)
+    except getopt.GetoptError as e:
+        print(e, file=sys.stderr)
+        print_servers_help()
+        sys.exit(2)
     
     t = thread.start_new_thread(manager.run, (configer,))
-=======
-    
-    t = _thread.start_new_thread(manager.run, (configer,))
->>>>>>> 0785a877b6605ca1b76aea95304fcd901b9db933
     time.sleep(1)
-    t = _thread.start_new_thread(DbTransfer.thread_db, ())
+    t = thread.start_new_thread(DbTransfer.thread_db, ())
     time.sleep(1)
-    t = _thread.start_new_thread(DbTransfer.thread_push, ())
+    t = thread.start_new_thread(DbTransfer.thread_push, ())
 
     while True:
         time.sleep(100)

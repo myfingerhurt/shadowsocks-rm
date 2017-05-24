@@ -279,8 +279,6 @@ class DNSResolver(object):
             if type(server) != str:
                 server = server.decode('utf8')
             self._servers.append(server)
-        #Custom DNS invalid
-        if self._servers:
             logging.info('custom dns is %s', server)
         else:
             try:
