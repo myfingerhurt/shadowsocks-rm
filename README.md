@@ -64,3 +64,13 @@ Database user table column
 
 `transfer_enable` if u + d > transfer_enable this server will be stop (db_transfer.py del_server_out_of_bound_safe)
 
+
+
+Custom DSN Server for manyuser[since 2.9a]
+-------
+
+Examples: 
+$ sudo servers.py -s 192.168.1.253
+$ sudo servers.py --dns-server=192.168.1.253
+$ sudo shadowsocks-rm/shadowsocks/servers.py --dns-server=192.168.1.253
+
