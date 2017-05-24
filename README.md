@@ -67,10 +67,10 @@ Database user table column
 
 
 Custom DSN Server for manyuser[since 2.9a]
--------
+-------    
 
-Examples: 
-$ sudo servers.py -s 192.168.1.253
-$ sudo servers.py --dns-server=192.168.1.253
-$ sudo shadowsocks-rm/shadowsocks/servers.py --dns-server=192.168.1.253
+Examples:  
+`$ sudo servers.py -s 192.168.1.253`  
+`$ sudo servers.py --dns-server=192.168.1.253`  
+`$ sudo shadowsocks-rm/shadowsocks/servers.py --dns-server=192.168.1.253`      
 
